@@ -8,12 +8,13 @@ class Transition {
     this.mode = props.mode || 'ease-in-out';
 
     this.attrArray = this.direction === 'horizontal' ? HORIZONTAL_ARRAY : VERTICAL_ARRAY;
-    this.elTransition = '';
+    let elTransition = '';
     this.attrArray.forEach(attr => {
+      attr = attr.replace(/([A-Z])/g,"-$1").toLowerCase();
       const item = `${this.timing}s ${attr} ${this.mode}, `;
-      this.elTransition += item;
+      elTransition += item;
     });
-    this.elTransition = this.elTransition.slice(0, -2);
+    this.elTransition = elTransition.slice(0, -2);
 
     let attr = this.attrArray[0];
     // this.scrollAttr: 'scrollHight' or 'scrollWidth'
@@ -23,28 +24,26 @@ class Transition {
 }
 
 function getTransitionFun (props) {
-  let transition = new Transition(props);
+  const TRANSITION = new Transition(props);
   return {
-    'before-enter' (el) {
-      console.log('before-enter')
-      el.style.transition = transition.elTransition;
+    beforeEnter (el) {
+      el.style.transition = TRANSITION.elTransition;
       if (!el.dataset) {
         el.dataset = {};
       }
-      transition.attrArray.forEach(attr => {
+      TRANSITION.attrArray.forEach(attr => {
         el.dataset[attr] = el.style[attr];
         el.style[attr] = 0;
       })
       el.style.boxSizing = 'content-box';
     },
   
-    'enter' (el) {
-      console.log('enter')
+    enter (el) {
       el.dataset.overflow = el.style.overflow;
       
-      transition.attrArray.forEach((attr, i) => {
+      TRANSITION.attrArray.forEach((attr, i) => {
         if (i === 0) {
-          el.style[attr] = el[transition.scrollAttr] ?  el[transition.scrollAttr] + 'px' : '';
+          el.style[attr] = el[TRANSITION.scrollAttr] ?  el[TRANSITION.scrollAttr] + 'px' : '';
         } else {
           el.style[attr] = el.dataset[attr];
         }
@@ -53,21 +52,19 @@ function getTransitionFun (props) {
       el.style.overflow = 'hidden';
     },
   
-    'after-enter' (el) {
-      console.log('after-enter')
+    afterEnter (el) {
       el.style.transition = '';
-      el.style[transition.scrollAttr] = '';
+      el.style[TRANSITION.scrollAttr] = '';
       el.style.overflow = el.dataset.overflow;
     },
   
-    'before-leave' (el) {
-      console.log('before-leave')
+    beforeLeave (el) {
       if (!el.dataset) {
         el.dataset = {};
       }
-      transition.attrArray.forEach((attr, i) => {
+      TRANSITION.attrArray.forEach((attr, i) => {
         if (i === 0) {
-          el.style[attr] = el[transition.scrollAttr] + 'px';
+          el.style[attr] = el[TRANSITION.scrollAttr] + 'px';
         } else {
           el.dataset[attr] = el.style[attr];
         }
@@ -77,22 +74,20 @@ function getTransitionFun (props) {
       el.style.boxSizing = 'border-box';
     },
   
-    'leave' (el) {
-      console.log('leave')
-      if (el[transition.scrollAttr] !== 0) {
-        el.style.transition = transition.elTransition;
-        transition.attrArray.forEach(attr => {
+    leave (el) {
+      if (el[TRANSITION.scrollAttr] !== 0) {
+        el.style.transition = TRANSITION.elTransition;
+        TRANSITION.attrArray.forEach(attr => {
           el.style[attr] = 0;
         })
       }
     },
   
-    'after-leave' (el) {
-      console.log('after-leave')
+    afterLeave (el) {
       el.style.transition = '';
       el.style.overflow = el.dataset.overflow;
   
-      transition.attrArray.forEach((attr, i) => {
+      TRANSITION.attrArray.forEach((attr, i) => {
         if (i === 0) {
           el.style[attr] = '';
         } else {
