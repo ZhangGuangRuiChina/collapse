@@ -1,10 +1,10 @@
-const HORIZONTAL_ARRAY = ['width', 'paddingLeft', 'marginLeft', 'paddingRight', 'marginRight'];
-const VERTICAL_ARRAY = ['height', 'paddingTop', 'marginTop', 'paddingBottom', 'marginBottom'];
+const HORIZONTAL_ARRAY = ['width', 'marginLeft', 'borderLeft', 'paddingLeft', 'paddingRight', 'borderRight', 'marginRight'];
+const VERTICAL_ARRAY = ['height', 'marginTop', 'paddingTop', 'borderTop', 'paddingBottom', 'borderBottom', 'marginBottom'];
 
 class Transition {
   constructor (props) {
     this.direction = props.direction || 'vertical';
-    this.timing = props.timing || 0.3;
+    this.timing = Number(props.timing) || 0.3;
     this.mode = props.mode || 'ease-in-out';
 
     this.attrArray = this.direction === 'horizontal' ? HORIZONTAL_ARRAY : VERTICAL_ARRAY;
@@ -36,11 +36,11 @@ function getTransitionFun (props) {
         el.style[attr] = 0;
       })
       el.style.boxSizing = 'content-box';
+      el.style.whiteSpace = 'nowrap';
     },
   
     enter (el) {
       el.dataset.overflow = el.style.overflow;
-      
       TRANSITION.attrArray.forEach((attr, i) => {
         if (i === 0) {
           el.style[attr] = el[TRANSITION.scrollAttr] ?  el[TRANSITION.scrollAttr] + 'px' : '';
@@ -98,7 +98,7 @@ function getTransitionFun (props) {
   }
 }
 export default {
-  name: 'collapseTransition',
+  name: 'z-collapse',
   functional: true,
   render(h, { children, props }) {
     const data = {

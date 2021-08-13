@@ -1,0 +1,12 @@
+{
+  "name": "z-collapse",
+  "version": "1.0.0",
+  "description": "collapse component base on Vue",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["z-collapse", "vue-collapse", "zgr-vue-collapse", "collapse", "vue", "zgr"],
+  "author": "ZhangGuangRuiChina",
+  "license": "LICENSE"
+}
